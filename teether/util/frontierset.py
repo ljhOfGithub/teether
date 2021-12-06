@@ -5,7 +5,7 @@ class FrontierSet(object):
     """
     A set that also maintains a partial topological ordering
     The current set of "non-blocked" items can be obtained as
-    .frontier
+    .frontier当前“非阻塞”项的集合可以通过.frontier获得
     """
 
     def __init__(self, data=None):
@@ -46,7 +46,7 @@ class FrontierSet(object):
     def add(self, a, b=None):
         """
         Add a to the set.
-        If b is given, require that a is a necessary prerequisite for b
+        If b is given, require that a is a necessary prerequisite for b 将a添加到集合中。如果b是给定的，要求a是b的必要前提
         :param a:
         :param b:
         :return:

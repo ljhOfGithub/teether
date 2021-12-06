@@ -25,14 +25,14 @@ class SlicingState(object):
         self.stacksize = stacksize
         self.stack_underflow = stack_underflow
         self.stack_delta = stack_delta
-        self.taintmap = frozenset(taintmap)
+        self.taintmap = frozenset(taintmap)#frozenset() 返回一个冻结的集合，冻结后集合不能再添加或删除任何元素。
         self.memory_taint = memory_taint
         # The actual slice doesn't matter that much. What matters more is the resulting EXPRESSION of the return-address
         # 实际的切片并不那么重要。更重要的是返回地址的结果表达式
         self.backward_slice = tuple(backward_slice)
         self.instructions = tuple(instructions)
 
-    def __hash__(self):
+    def __hash__(self):#调用hash()函数时实际调用的函数,自定义散列值，双下划线函数	https://blog.51cto.com/altboy/1945781
         return sum(
             a * b for a, b in zip((23, 29, 31, 37, 41), (
                 self.stacksize, self.stack_delta, hash(self.taintmap), hash(self.instructions),
@@ -71,13 +71,13 @@ def advance_slice(slicing_state, memory_info):
             slice_candidate = True
         if slice_candidate:
             add_to_slice = False
-            if 0x80 <= ins.op <= 0x8f:  # Special handling for DUPa
+            if 0x80 <= ins.op <= 0x8f:  # Special handling for DUPa DUPa的特殊处理
                 if stacksize - 1 in taintmap:
                     add_to_slice = True
                     in_idx = ins.op - 0x7f
                     taintmap.remove(stacksize - 1)
                     taintmap.add((stacksize - 1) - in_idx)
-            elif 0x90 <= ins.op <= 0x9f:  # Special handling for SWAP
+            elif 0x90 <= ins.op <= 0x9f:  # Special handling for SWAP SWAP特殊处理
                 in_idx = ins.op - 0x8f
                 if stacksize - 1 in taintmap or (stacksize - 1) - in_idx in taintmap:
                     add_to_slice = True
@@ -90,7 +90,7 @@ def advance_slice(slicing_state, memory_info):
                     elif (stacksize - 1) - in_idx in taintmap:
                         taintmap.remove((stacksize - 1) - in_idx)
                         taintmap.add(stacksize - 1)
-            else:  # assume entire stack is affected otherwise
+            else:  # assume entire stack is affected otherwise假设整个栈受到影响
                 add_to_slice = True
                 taintmap -= set(range(stacksize - ins.outs, stacksize))
                 taintmap |= set(range(stacksize - ins.outs, stacksize - ins.delta))

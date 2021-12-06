@@ -8,26 +8,28 @@ class BB(object):
     def __init__(self, ins):
         self.ins = ins
         self.streads = set()  # indices of stack-items that will be read by this BB (0 is the topmost item on stack)
+        # 将被这个BB读取的堆栈项的索引(0是堆栈上最上面的项)
         self.stwrites = set()  # indices of stack-items that will be written by this BB (0 is the topmost item on stack)
+        # 将由这个BB写入的堆栈项的索引(0是堆栈上最上面的项)
         self.stdelta = 0
         for i in ins:
             i.bb = self
             if 0x80 <= i.op <= 0x8f:  # Special handling for DUP
-                ridx = i.op - 0x80 - self.stdelta
-                widx = -1 - self.stdelta
+                ridx = i.op - 0x80 - self.stdelta#根据evm文档获得实际的dup指令
+                widx = -1 - self.stdelta#计算实际将要写入的位置，栈顶
                 if ridx not in self.stwrites:
-                    self.streads.add(ridx)
+                    self.streads.add(ridx)#将要读取的位置，倒数第ridx个
                 self.stwrites.add(widx)
             elif 0x90 <= i.op <= 0x9f:  # Special handling for SWAP
                 idx1 = i.op - 0x8f - self.stdelta
                 idx2 = - self.stdelta
-                if idx1 not in self.stwrites:
+                if idx1 not in self.stwrites:#如果该位置不会被写入，则读取该位置的值为后面的复制做准备
                     self.streads.add(idx1)
                 if idx2 not in self.stwrites:
                     self.streads.add(idx2)
                 self.stwrites.add(idx1)
                 self.stwrites.add(idx2)
-            else:  # assume entire stack is affected otherwise
+            else:  # assume entire stack is affected otherwise假设整个堆栈受到影响
                 for j in range(i.ins):
                     idx = j - self.stdelta
                     if idx not in self.stwrites:
@@ -36,7 +38,7 @@ class BB(object):
                     idx = i.ins - 1 - j - self.stdelta
                     self.stwrites.add(idx)
             self.stdelta += i.delta
-        self.streads = {x for x in self.streads if x >= 0}
+        self.streads = {x for x in self.streads if x >= 0}#找原集合中的非负的位置
         self.stwrites = {x for x in self.stwrites if x >= 0}
         self.start = self.ins[0].addr
         self.pred = set()
@@ -50,14 +52,17 @@ class BB(object):
         # maintain a set of 'must_visit' constraints to limit
         # backward-slices to only new slices after new edges are added
         # initially, no constraint is given (= empty set)
+        # 维护一组'must_visit'约束，以限制向后切片仅在初始添加新边后的新切片，没有给出约束(=空集)
         self.must_visit = [set()]
         # also maintain an estimate of how fast we can get from here
         # to the root of the cfg
         # how fast meaning, how many JUMPI-branches we have to take
+        #还可以估算从这里到cfg根的速度有多快，也就是我们需要多少个跳转分支
         self.estimate_constraints = (1 if self.branch else 0) if self.start == 0 else None
+        # start=0且branch=1时estimate_constraints为1，start=0且branch=0时estimate_constraints为0，start=1则为none，后面的优先判断
         # and another estimate fo many backwards branches
-        # we will encounter to the root
-        self.estimate_back_branches = 0 if self.start == 0 else None
+        # we will encounter to the root另一个估计是我们会遇到很多向后的分支
+        self.estimate_back_branches = 0 if self.start == 0 else None 
 
     @property
     def jump_resolved(self):
@@ -154,6 +159,7 @@ class BB(object):
                     new_succ_addrs.add((path, succ_addr))
         # We did our best,
         # if someone finds a new edge, jump_resolved will be set to False by the BFS in add_succ
+        # 我们已经尽了最大努力，如果有人找到了一个新的边，则在add_succ中BFS将jump_resolved设置为False
         self.must_visit = []
         return self.succ_addrs, new_succ_addrs
 

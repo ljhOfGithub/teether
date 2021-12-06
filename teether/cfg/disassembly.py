@@ -30,6 +30,7 @@ def disass(code, i=0):
         i += 1
         yield Instruction(loc, op, arg)
         # End basic block on STOP, JUMP, JUMPI, RETURN, REVERT, RAISE, or if the following instruction is a JUMPDEST
+        # 在STOP, JUMP, JUMPI, RETURN, REVERT, RAISE上结束基本块，或者如果下面的指令是JUMPDEST
         if op in (0x00, 0x56, 0x57, 0xf3, 0xfd, 0xfe, 0xff) or (i < len(code) and code[i] == 0x5b):
             break
 

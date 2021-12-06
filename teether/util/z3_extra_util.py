@@ -10,7 +10,7 @@ def to_bytes(v):
 def get_vars(f, rs=set()):
     """
     shameless copy of z3util.get_vars,
-    but returning select-operations as well.
+    but returning select-operations as well.无耻的z3util拷贝。Get_vars，但也返回选择操作。
     E.g.
     >>> x = z3.Array('x', z3.IntSort(), z3.IntSort())
     >>> get_vars(x[5])

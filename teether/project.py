@@ -67,7 +67,7 @@ class Project(object):
         return run_symbolic(self.prg, path, self.code, inclusive=inclusive)
 
     def get_constraints(self, instructions, args=None, inclusive=False, find_sstore=False):
-        # only check instructions that have a chance to reach root
+        # only check instructions that have a chance to reach root#只检查有机会到达根目录的指令
         instructions = [ins for ins in instructions if 0 in ins.bb.ancestors | {ins.bb.start}]
         if not instructions:
             return
@@ -77,7 +77,7 @@ class Project(object):
         if args:
             slices = [s + (ins,) for ins in instructions for s in interesting_slices(ins, args, reachable=True)]
         else:
-            # Are we looking for a state-changing path?
+            # Are we looking for a state-changing path?#我们是在寻找一条改变state的道路吗?
             if find_sstore:
                 sstores = self.cfg.filter_ins('SSTORE', reachable=True)
                 slices = [(sstore, ins) for sstore in sstores for ins in instructions]
