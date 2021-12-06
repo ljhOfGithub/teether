@@ -42,6 +42,8 @@ def run(program, state=None, code=None, ctx=None, check_initialized=False, trace
         mem = state.memory
         # Valid operations
         # Pushes first because they are very frequent
+        #有效操作
+        # push优先，因为他们非常频繁
         if 0x60 <= opcode <= 0x7f:
             stk.append(int.from_bytes(ins.arg, byteorder='big'))
             state.pc += opcode - 0x5f  # Move 1 byte forward for 0x60, up to 32 bytes for 0x7f
@@ -328,6 +330,7 @@ def run_symbolic(program, path, code=None, state=None, ctx=None, inclusive=False
             return SymbolicResult(xid, state, constraints, sha_constraints, target_op)
 
         # if not, have we reached another step of our path?
+        #如果不是，我们是不是又迈出了一步?
         elif state.pc == path[0]:
             path = path[1:]
 
@@ -339,6 +342,8 @@ def run_symbolic(program, path, code=None, state=None, ctx=None, inclusive=False
         state.gas -= ins.gas
         # Valid operations
         # Pushes first because they are very frequent
+        #有效操作
+        # push优先，因为他们非常频繁
         if 0x60 <= opcode <= 0x7f:
             stk.append(int.from_bytes(ins.arg, byteorder='big'))
             state.pc += opcode - 0x5f  # Move 1 byte forward for 0x60, up to 32 bytes for 0x7f

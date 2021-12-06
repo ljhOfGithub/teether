@@ -28,6 +28,7 @@ class SlicingState(object):
         self.taintmap = frozenset(taintmap)
         self.memory_taint = memory_taint
         # The actual slice doesn't matter that much. What matters more is the resulting EXPRESSION of the return-address
+        # 实际的切片并不那么重要。更重要的是返回地址的结果表达式
         self.backward_slice = tuple(backward_slice)
         self.instructions = tuple(instructions)
 
@@ -104,7 +105,7 @@ def advance_slice(slicing_state, memory_info):
                     memory_taint = memory_taint - ins_info.writes + ins_info.reads
 
         stacksize -= ins.delta
-        # no taint left? then our job here is done
+        # no taint left? then our job here is done#没有污点?那我们的任务就完成了
         if not taintmap and not memory_taint:
             stack_adjust = stacksize - stack_underflow
             if stack_adjust > 0:
@@ -115,7 +116,7 @@ def advance_slice(slicing_state, memory_info):
 
         stack_delta += ins.delta
 
-    # still taint left? trace further if gas is still sufficient
+    # still taint left? trace further if gas is still sufficient#还留下污点?如果气体仍然充足，再加微量
     return SlicingState(stacksize, stack_underflow, stack_delta, set(taintmap), memory_taint, list(backward_slice),
                         [])
 

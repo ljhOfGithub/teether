@@ -161,15 +161,20 @@ class StorageInfo(object):
     def may_read_from(self, other):
         if not self.symbolic_reads and not other.symbolic_writes:
             # no side has a non-hash-based symbolic access
+            # no side具有非哈希符号访问权限
             # => only concrete accesses can intersect
+            # 只有具体的入口可以相交
             # (or hash-based accesses, which we will check later)
             if self.concrete_reads & other.concrete_writes:
                 return True
         else:
             # at least one side has a non-hash-based symbolic access
+            # 至少一方具有非基于散列的符号访问
             # => if there is at least one concrete or symbolic access
             # on the other side, the two could be equal
+            # 如果在另一边至少有一个具体的或象征性的通道，那么这两个通道可能是相等的
             # (otherwise we have to look at hash-based accesses, see below)
+            # (否则我们必须考虑基于散列的访问，见下文)
             if ((self.symbolic_reads or self.concrete_reads or self.symbolic_hash_reads) and
                     (other.symbolic_writes or other.concrete_writes or other.symbolic_hash_writes)):
                 return True

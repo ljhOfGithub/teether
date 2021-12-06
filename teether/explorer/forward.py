@@ -72,6 +72,7 @@ class ForwardExplorer(object):
         if not slices:
             return
         # distance from a BB to instruction
+        # 基本块到指令的距离
         for slice in slices:
             for i in slice:
                 if i.bb.start not in self.dist_map:

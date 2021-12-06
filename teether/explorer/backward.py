@@ -18,6 +18,7 @@ class BackwardExplorerState(object):
         Return an estimate of how quickly we can reach the root of the tree
         This estimate is the sum of the number of branches taken so far (self.cost) and the
         estimate given by the next BB to visit (self.bb.estimate)
+        返回我们到达树根的估计速度，这个估计是到目前为止所获得的分支数量(self.cost)和下一个要访问的BB给出的估计(self.bb.estimate)的总和。
         :return: estimated distance to root
         """
         if self.bb.estimate_constraints is None:
@@ -28,7 +29,7 @@ class BackwardExplorerState(object):
     def rank(self):
         """
         Compute a rank for this state. Order by estimated root-distance first, solve ties by favoring less restricted states
-        for caching efficiency
+        for caching efficiency计算这个状态的等级。首先通过估计根距离排序，通过倾向于较少限制的状态来解决连接，以提高缓存效率
         :return:
         """
         return self.estimate(), len(self.must_visit)
