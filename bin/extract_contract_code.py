@@ -10,7 +10,7 @@ from teether.slicing import backward_slice, slice_to_program
 
 def extract_contract_code(code):
     """
-    Extract actual contract code from deployment code
+    Extract actual contract code from deployment code从部署代码中提取实际的契约代码
     :param code: deployment code (as output)
     :return: code of deployed contract
     """

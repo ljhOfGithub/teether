@@ -83,8 +83,8 @@ class BB(object):
                 p.update_descendants(new_descendants)
 
     def update_estimate_constraints(self):
-        if all(p.estimate_constraints is None for p in self.pred):
-            return
+        if all(p.estimate_constraints is None for p in self.pred):#all() 函数用于判断给定的可迭代参数 iterable 中的所有元素是否都为 TRUE，如果是返回 True，否则返回 False。
+            return#p是self.pred集合中的一个对象，有属性estimate_constraints，如果每个BB对象的estimate_constraints都是None则直接返回
         best_estimate = min(p.estimate_constraints for p in self.pred if p.estimate_constraints is not None)
         if self.branch:
             best_estimate += 1
