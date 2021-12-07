@@ -51,7 +51,7 @@ class BackwardExplorerState(object):
 
 def generate_sucessors(state, new_data, update_data, predicate=lambda st, pred: True):
     new_todo = []
-    if state.gas is None or state.gas > 0:
+    if state.gas is None or state.gas > 0:#无限gas或者有gas
         # logging.debug('[tr] [gs] passed first if')
         new_gas = state.gas
         if state.gas and len(state.bb.pred) > 1:

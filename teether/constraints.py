@@ -11,7 +11,7 @@ from teether.util.utils import big_endian_to_int, sha3
 from teether.util.z3_extra_util import get_vars_non_recursive, to_bytes, simplify_non_const_hashes, get_solver
 
 
-class UnresolvedConstraints(Exception):
+class UnresolvedConstraints(Exception):#未解析的约束
     def __init__(self, unresolved):
         super(UnresolvedConstraints, self).__init__(unresolved)
         self.unresolved = unresolved
@@ -74,7 +74,7 @@ def symread_eq(a, b, size=MAX_SYM_READ_SIZE):
         else:
             return a == b
     elif isinstance(a, SymRead) and isinstance(b, SymRead):
-        # both have symbolic size
+        # both have symbolic size#都有符号大小
         return z3.And(a.size == b.size,
                       *(z3.If(z3.ULT(i, a.size), a.memory[a.start + i] == b.memory[b.start + i], True) for i in
                         range(size)))

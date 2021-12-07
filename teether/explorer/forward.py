@@ -4,7 +4,7 @@ from queue import PriorityQueue
 from teether.util.utils import is_subseq, is_substr
 
 
-class ForwardExplorerState(object):
+class ForwardExplorerState(object):#使用A*搜索算法【15】，路径成本定义为该路径在CFG中经过的分支数
     def __init__(self, bb, path=None, branches=None, slices=None):
         self.bb = bb
         self.path = list(path) + [bb.start] or []
@@ -68,14 +68,14 @@ class ForwardExplorer(object):
 
     def find(self, slices, looplimit=3, avoid=frozenset(), prefix=None):
         avoid = frozenset(avoid)
-        slices = tuple(tuple(i for i in s if i.bb) for s in slices)
-        if not slices:
+        slices = tuple(tuple(i for i in s if i.bb) for s in slices)#slices中的slice对象的基本块对象非0时，取出来构成一个元组
+        if not slices:#
             return
         # distance from a BB to instruction
         # 基本块到指令的距离
         for slice in slices:
-            for i in slice:
-                if i.bb.start not in self.dist_map:
+            for i in slice:#slice中的每个
+                if i.bb.start not in self.dist_map:#字典，i.bb.start:self.cfg.distance_map(i)
                     self.dist_map[i.bb.start] = self.cfg.distance_map(i)
 
         if prefix is None:
@@ -101,7 +101,7 @@ class ForwardExplorer(object):
                 state.slices = tuple(s for s in state.slices if s)
                 if not state.slices:
                     continue
-            if state.path.count(state.bb.start) > looplimit:
+            if state.path.count(state.bb.start) > looplimit:#
                 continue
             for next_state in state.next_states():
                 next_state.weight = self.weight(next_state)
