@@ -199,6 +199,7 @@ class StorageInfo(object):
                     return True
 
         # at this point, we have checked every possible combination
+        # 在这一点上，我们已经检查了所有可能的组合
         # => no luck this time
         return False
 

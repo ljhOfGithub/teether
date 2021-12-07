@@ -1,4 +1,4 @@
-# schema: [opcode, ins, outs, gas]
+# schema: [opcode, ins, outs, gas]#消耗的gas
 opcodes = {
     0x00: ['STOP', 0, 0, 0],
     0x01: ['ADD', 2, 1, 3],

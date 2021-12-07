@@ -20,6 +20,7 @@ class BackwardExplorerState(object):
         estimate given by the next BB to visit (self.bb.estimate)
         返回我们到达树根的估计速度，这个估计是到目前为止所获得的分支数量(self.cost)和下一个要访问的BB给出的估计(self.bb.estimate)的总和。
         :return: estimated distance to root
+        :返回:到根的估计距离
         """
         if self.bb.estimate_constraints is None:
             return self.cost
@@ -34,7 +35,7 @@ class BackwardExplorerState(object):
         """
         return self.estimate(), len(self.must_visit)
 
-    def __lt__(self, other):
+    def __lt__(self, other):#<运算符重载
         return self.rank() < other.rank()
 
     def __hash__(self):
@@ -93,6 +94,14 @@ def traverse_back(start_ins, initial_gas, initial_data, advance_data, update_dat
     :param must_visits: FrontierSet describing the next nodes that *must* be visited
     :param predicate: A function (state, BB) -> Bool describing whether an edge should be taken or not
     :return: yields paths as they are explored one-by-one
+    :param start_ins:启动指令
+    :param initial_gas:启动gas。可以是None，在这种情况下它是无限的
+    :param initial_data:启动数据
+    :参数advance_data:高级数据的方法
+    :参数update_data:更新数据的方法
+    :param must_visits: FrontierSet描述下一个必须访问的节点
+    :param predicate:一个函数(state, BB) -> Bool，用于描述是否应该取边
+    :return:生成一个个路径
     """
     todo = PriorityQueue()
 
@@ -116,6 +125,7 @@ def traverse_back(start_ins, initial_gas, initial_data, advance_data, update_dat
         state = todo.get()
         # if this BB can be reached via multiple paths, check if we want to cache it
         # or whether another path already reached it with the same state
+        # 如果这个BB可以通过多个路径到达，检查我们是否想要缓存它，或者其他路径是否已经以相同的状态到达它
         if len(state.bb.succ) > 1:
             if state in cache:
                 # logging.debug('[tr] CACHE HIT')

@@ -223,6 +223,7 @@ class SymbolicEVMState(AbstractEVMState):
         # Effectively, only the storage is copied,
         # as this is sufficient to prepend a
         # result with this state to another call
+        # 做一个这种状态的表面拷贝。实际上，只复制存储，因为这足以将具有此状态的结果前置到另一个调用
         new_storage = self.storage.copy(new_xid)
         new_state = SymbolicEVMState(new_xid)
         new_state.storage = new_storage
